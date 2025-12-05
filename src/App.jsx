@@ -2,11 +2,14 @@ import { useState, useEffect} from 'react'
 import s from './App.module.css'
 import {api} from './api/api'
 import { Card } from './components/card.jsx'
+import Tilt from 'react-parallax-tilt'
+import InfoModal from './components/infoModal'
 
 function App() {
   const [data, setData] = useState([])
   const [searchName, setSearchName] = useState("")
   const [searchPage, setSearchPage] = useState("")
+  const [modal, setModal] = useState(); 
 
 
   useEffect(() => {
@@ -19,7 +22,9 @@ function App() {
     })
     }, [searchPage, searchName])
   return (
+    
     <>
+      {modal !== undefined && <InfoModal data={data[modal]} close={() => setModal()}/>}
     <h1 className={s.title}>Rick and Morty Characters</h1>
     <main>
       <div style={{display: "flex", flexWrap: "wrap", gap: "40px", alignItems: "center", justifyContent: "center"}}>
@@ -31,7 +36,10 @@ function App() {
         {data.map((item, index) => {
           return(
             <div key={index}> 
+              <Tilt tiltReverse={true}>
               <Card image={item.image} name={item.name} species={item.species}/>
+            </Tilt>
+            <button onClick={() => setModal(index)} className={s.infoBtn}>Info {item.name}</button>
             </div>
           )
         })}
